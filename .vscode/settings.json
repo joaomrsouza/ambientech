@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "*.geojson": "json",
+    "*.html": "html",
+    "*.jsx": "javascriptreact",
+    "*/requirements{/**,*}.{txt,in}": "pip-requirements",
+    ".pleeeaserc": "json",
+    "algorithm": "cpp"
+  }
+}

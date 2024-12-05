@@ -2,23 +2,36 @@
 
 #include "DHT.h"
 
+#define DHTTYPE DHT11
+
+typedef struct
+{
+  float data[10];
+  int curIndex;
+} FloatBuffer;
+
 typedef struct
 {
   int data[10];
   int curIndex;
-} Buffer;
+} IntBuffer;
 
-#define DHT_PIN 5
+#define DHT_PIN 32
 #define RAIN_PIN 34
 
-DHT sensorDHT;
-Buffer temperatureBuffer;
-Buffer humidityBuffer;
-Buffer rainBuffer;
+DHT dht(DHT_PIN, DHTTYPE);
+
+FloatBuffer temperatureBuffer;
+FloatBuffer humidityBuffer;
+IntBuffer rainBuffer;
+
+void simulateRequest();
 
 void setup()
 {
-  sensorDHT.setup(DHT_PIN, DHT::DHT11);
+  pinMode(RAIN_PIN, INPUT);
+
+  dht.begin();
   delayMicroseconds(1000); // Wait for sensor to boot
 
   Serial.begin(9600);
@@ -26,41 +39,65 @@ void setup()
   temperatureBuffer.curIndex = 0;
   humidityBuffer.curIndex = 0;
   rainBuffer.curIndex = 0;
+
+  randomSeed(analogRead(0));
 }
 
 void loop()
 {
-  float temperatureRead = sensorDHT.getTemperature();
-  if (sensorDHT.getStatus() == DHT::ERROR_NONE)
+  Serial.println("==========  Loop  ==========");
+
+  Serial.println("MILIS: " + String(millis()));
+  float temperatureRead = dht.readTemperature();
+  if (!isnan(temperatureRead))
   {
     temperatureBuffer.data[temperatureBuffer.curIndex] = temperatureRead;
     Serial.println("Temperature Buffer " + String(temperatureBuffer.curIndex) + ": " + String(temperatureBuffer.data[temperatureBuffer.curIndex++]));
-    Serial.println("Temperature Buffer " + String(temperatureBuffer.curIndex) + ": " + String(temperatureBuffer.data[temperatureBuffer.curIndex++]));
   }
 
-  Serial.println("Humidity Buffer " + String(humidityBuffer.curIndex) + ": " + String(humidityBuffer.data[humidityBuffer.curIndex++]));
-  Serial.println("Humidity Queue TIMEOUT");
+  float humidityRead = dht.readHumidity();
+  if (!isnan(humidityRead))
+  {
+    humidityBuffer.data[humidityBuffer.curIndex] = humidityRead;
+    Serial.println("Humidity Buffer " + String(humidityBuffer.curIndex) + ": " + String(humidityBuffer.data[humidityBuffer.curIndex++]));
+  }
 
+  int rainRead = analogRead(RAIN_PIN);
+  rainBuffer.data[rainBuffer.curIndex] = rainRead;
   Serial.println("Rain Buffer " + String(rainBuffer.curIndex) + ": " + String(rainBuffer.data[rainBuffer.curIndex++]));
-  Serial.println("Rain Queue TIMEOUT");
 
   if (temperatureBuffer.curIndex == 10)
   {
     Serial.println("Sending Temperature data...");
+    simulateRequest();
     temperatureBuffer.curIndex = 0;
   }
 
   if (humidityBuffer.curIndex == 10)
   {
     Serial.println("Sending Humidity data...");
+    simulateRequest();
     humidityBuffer.curIndex = 0;
   }
 
   if (rainBuffer.curIndex == 10)
   {
     Serial.println("Sending Rain data...");
+    simulateRequest();
     rainBuffer.curIndex = 0;
   }
 
-  vTaskDelay(pdMS_TO_TICKS(1000));
+  delay(5000);
+}
+
+void simulateRequest()
+{
+  // Generate a random delay between 1000ms (1 second) and 3000ms (3 seconds)
+  int delayTime = random(1000, 3001); // random(min, max) includes min, excludes max
+  Serial.print("Simulating request, waiting for ");
+  Serial.print(delayTime);
+  Serial.println(" milliseconds...");
+
+  delay(delayTime); // Pause for the random duration
+  Serial.println("Request simulation complete.");
 }

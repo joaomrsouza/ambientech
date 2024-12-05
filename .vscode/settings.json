@@ -6,6 +6,7 @@
     "*.jsx": "javascriptreact",
     "*/requirements{/**,*}.{txt,in}": "pip-requirements",
     ".pleeeaserc": "json",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "cmath": "cpp"
   }
 }

@@ -6,16 +6,24 @@
 
 #include "DHT.h"
 
+#define DHTTYPE DHT11
+
+typedef struct
+{
+  float data[10];
+  int curIndex;
+} FloatBuffer;
+
 typedef struct
 {
   int data[10];
   int curIndex;
-} Buffer;
+} IntBuffer;
 
-#define DHT_PIN 5
+#define DHT_PIN 32
 #define RAIN_PIN 34
 
-DHT sensorDHT;
+DHT dht(DHT_PIN, DHTTYPE);
 
 TaskHandle_t xTaskHandleReadTemperature = NULL;
 TaskHandle_t xTaskHandleReadHumidity = NULL;
@@ -31,13 +39,17 @@ void vTaskReadHumidity(void *pvParams);
 void vTaskReadRain(void *pvParams);
 void vTaskSendData(void *pvParams);
 
+void simulateRequest();
+
 void setup()
 {
-  sensorDHT.setup(DHT_PIN, DHT::DHT11);
+  dht.begin();
   delayMicroseconds(1000); // Wait for sensor to boot
 
-  xQueueHandleTemperature = xQueueCreate(10, sizeof(int));
-  xQueueHandleHumidity = xQueueCreate(10, sizeof(int));
+  randomSeed(analogRead(0));
+
+  xQueueHandleTemperature = xQueueCreate(10, sizeof(float));
+  xQueueHandleHumidity = xQueueCreate(10, sizeof(float));
   xQueueHandleRain = xQueueCreate(10, sizeof(int));
 
   xTaskCreatePinnedToCore(vTaskReadTemperature, "Read Temperature Task: ", configMINIMAL_STACK_SIZE + 1024, NULL, 1, &xTaskHandleReadTemperature, 0);
@@ -52,13 +64,15 @@ void loop()
 
 void vTaskReadTemperature(void *pvParams)
 {
+  Serial.begin(9600);
+
   while (1)
   {
-    int sensorRead = sensorDHT.getTemperature();
-    if (sensorDHT.getStatus() == DHT::ERROR_NONE)
-    {
+    float sensorRead = dht.readTemperature();
+    if (!isnan(sensorRead))
       xQueueSend(xQueueHandleTemperature, &sensorRead, pdMS_TO_TICKS(1000));
-    }
+    else
+      Serial.println("Error reading temperature");
 
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
@@ -66,14 +80,15 @@ void vTaskReadTemperature(void *pvParams)
 
 void vTaskReadHumidity(void *pvParams)
 {
+  Serial.begin(9600);
 
   while (1)
   {
-    int sensorRead = sensorDHT.getHumidity();
-    if (sensorDHT.getStatus() == DHT::ERROR_NONE)
-    {
+    float sensorRead = dht.readHumidity();
+    if (!isnan(sensorRead))
       xQueueSend(xQueueHandleHumidity, &sensorRead, pdMS_TO_TICKS(1000));
-    }
+    else
+      Serial.println("Error reading humidity");
 
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
@@ -96,13 +111,13 @@ void vTaskSendData(void *pvParams)
 {
   Serial.begin(9600);
 
-  Buffer temperatureBuffer;
+  FloatBuffer temperatureBuffer;
   temperatureBuffer.curIndex = 0;
 
-  Buffer humidityBuffer;
+  FloatBuffer humidityBuffer;
   humidityBuffer.curIndex = 0;
 
-  Buffer rainBuffer;
+  IntBuffer rainBuffer;
   rainBuffer.curIndex = 0;
 
   while (1)
@@ -125,21 +140,36 @@ void vTaskSendData(void *pvParams)
     if (temperatureBuffer.curIndex == 10)
     {
       Serial.println("Sending Temperature data...");
+      simulateRequest();
       temperatureBuffer.curIndex = 0;
     }
 
     if (humidityBuffer.curIndex == 10)
     {
       Serial.println("Sending Humidity data...");
+      simulateRequest();
       humidityBuffer.curIndex = 0;
     }
 
     if (rainBuffer.curIndex == 10)
     {
       Serial.println("Sending Rain data...");
+      simulateRequest();
       rainBuffer.curIndex = 0;
     }
 
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
+}
+
+void simulateRequest()
+{
+  // Generate a random delay between 1000ms (1 second) and 3000ms (3 seconds)
+  int delayTime = random(1000, 3001); // random(min, max) includes min, excludes max
+  Serial.print("Simulating request, waiting for ");
+  Serial.print(delayTime);
+  Serial.println(" milliseconds...");
+
+  delay(delayTime); // Pause for the random duration
+  Serial.println("Request simulation complete.");
 }

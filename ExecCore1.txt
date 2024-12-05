@@ -1,0 +1,87 @@
+TASK 4
+TASK 4: Temperature Buffer 0: 25.30
+TASK 4: Humidity Queue TIMEOUT
+TASK 4: Rain Buffer 0: 4095
+TASK 4
+TASK 4: Temperature Queue TIMEOUT
+TASK 4: Humidity Queue TIMEOUT
+TASK 4: Rain Buffer 1: 4095
+TASK 4
+TASK 4: Temperature Buffer 1: 25.30
+TASK 4: Humidity Buffer 0: 55.00
+TASK 4: Rain Queue TIMEOUT
+TASK 4: Temperature Buffer 1: 25.30
+TASK 4: Humidity Buffer 0: 55.00
+TASK 4: Rain Queue TIMEOUT
+TASK 4: Humidity Buffer 0: 55.00
+TASK 4: Rain Queue TIMEOUT
+TASK 4: Rain Queue TIMEOUT
+TASK 4
+TASK 4: Temperature Queue TIMEOUT
+TASK 4: Humidity Buffer 1: 0.00
+TASK 4: Rain Buffer 2: 4095
+TASK 4
+TASK 4: Temperature Buffer 2: 25.30
+TASK 4: Humidity Queue TIMEOUT
+TASK 4: Rain Queue TIMEOUT
+TASK 4
+TASK 4: Temperature Buffer 3: 25.30
+TASK 4: Humidity Buffer 2: 55.00
+TASK 4: Rain Buffer 3: 4095
+TASK 4
+TASK 4: Temperature Buffer 4: 0.00
+TASK 4: Humidity Buffer 3: 54.00
+TASK 4: Rain Buffer 4: 4095
+TASK 4
+TASK 4: Temperature Buffer 5: 25.30
+TASK 4: Humidity Buffer 4: 54.00
+TASK 4: Rain Buffer 5: 4095
+TASK 4
+TASK 4: Temperature Buffer 6: 0.00
+TASK 4: Humidity Buffer 5: 54.00
+TASK 4: Rain Buffer 6: 4095
+TASK 4
+TASK 4: Temperature Queue TIMEOUT
+TASK 4: Humidity Buffer 6: 54.00
+TASK 4: Rain Buffer 7: 4095
+TASK 4
+TASK 4: Temperature Buffer 7: 25.30
+TASK 4: Humidity Buffer 7: 0.00
+TASK 4: Rain Buffer 8: 4095
+TASK 4
+TASK 4: Temperature Buffer 8: 25.30
+TASK 4: Humidity Queue TIMEOUT
+TASK 4: Rain Queue TIMEOUT
+TASK 4
+TASK 4: Temperature Buffer 9: 25.30
+TASK 4: Humidity Buffer 8: 54.00
+TASK 4: Rain Buffer 9: 4095
+TASK 4: Sending Temperature data...
+TASK 4: Simulating request, waiting for 2421 milliseconds...
+TASK 4: Request simulation complete.
+TASK 4: Sending Rain data...
+TASK 4: Simulating request, waiting for 2326 milliseconds...
+TASK 4: Request simulation complete.
+TASK 4
+TASK 4: Temperature Buffer 0: 0.00
+TASK 4: Humidity Buffer 9: 54.00
+TASK 4: Rain Buffer 0: 4095
+TASK 4: Sending Humidity data...
+TASK 4: Simulating request, waiting for 2472 milliseconds...
+TASK 4: Request simulation complete.
+TASK 4
+TASK 4: Temperature Buffer 1: 25.30
+TASK 4: Humidity Buffer 0: 54.00
+TASK 4: Rain Buffer 1: 4095
+TASK 4
+TASK 4: Temperature Buffer 2: 25.30
+TASK 4: Humidity Buffer 1: 0.00
+TASK 4: Rain Buffer 2: 4095
+TASK 4
+TASK 4: Temperature Queue TIMEOUT
+TASK 4: Humidity Queue TIMEOUT
+TASK 4: Rain Buffer 3: 4095
+TASK 4
+TASK 4: Temperature Buffer 3: 25.30
+TASK 4: Humidity Buffer 2: 54.00
+TASK 4: Rain Queue TIMEOUT

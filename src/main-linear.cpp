@@ -54,6 +54,8 @@ void loop()
     temperatureBuffer.data[temperatureBuffer.curIndex] = temperatureRead;
     Serial.println("Temperature Buffer " + String(temperatureBuffer.curIndex) + ": " + String(temperatureBuffer.data[temperatureBuffer.curIndex++]));
   }
+  else
+    Serial.println("Error reading temperature");
 
   float humidityRead = dht.readHumidity();
   if (!isnan(humidityRead))
@@ -61,6 +63,8 @@ void loop()
     humidityBuffer.data[humidityBuffer.curIndex] = humidityRead;
     Serial.println("Humidity Buffer " + String(humidityBuffer.curIndex) + ": " + String(humidityBuffer.data[humidityBuffer.curIndex++]));
   }
+  else
+    Serial.println("Error reading humidity");
 
   int rainRead = analogRead(RAIN_PIN);
   rainBuffer.data[rainBuffer.curIndex] = rainRead;

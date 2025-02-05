@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
@@ -48,6 +48,7 @@ DHT dht(DHT_PIN, DHTTYPE);
 RTC_DS1307 rtc;
 
 HTTPClient http;
+WiFiClientSecure *client = new WiFiClientSecure;
 
 TaskHandle_t xTaskHandleReadTemperature = NULL;
 TaskHandle_t xTaskHandleReadHumidity = NULL;
@@ -80,6 +81,8 @@ void setup()
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
+  client->setCACert(ROOT_CERT);
+
   if (!rtc.begin())
   {
     Serial.println("Couldn't find RTC");
@@ -99,7 +102,7 @@ void setup()
   xTaskCreatePinnedToCore(vTaskReadTemperature, "Read Temperature Task: ", configMINIMAL_STACK_SIZE + 1024, NULL, 1, &xTaskHandleReadTemperature, 0);
   xTaskCreatePinnedToCore(vTaskReadHumidity, "Read Humidity Task: ", configMINIMAL_STACK_SIZE + 1024, NULL, 1, &xTaskHandleReadHumidity, 0);
   xTaskCreatePinnedToCore(vTaskReadRain, "Read Rain Task: ", configMINIMAL_STACK_SIZE + 1024, NULL, 1, &xTaskHandleReadRain, 0);
-  xTaskCreatePinnedToCore(vTaskSendData, "Send Data Task: ", configMINIMAL_STACK_SIZE + (1024 * 2), NULL, 1, &xTaskHandleSendData, 1);
+  xTaskCreatePinnedToCore(vTaskSendData, "Send Data Task: ", configMINIMAL_STACK_SIZE + (1024 * 6), NULL, 1, &xTaskHandleSendData, 1);
 }
 
 void loop()
@@ -249,7 +252,7 @@ void sendData(T buffer, String sensorName)
   if (WiFi.status() != WL_CONNECTED)
     return;
 
-  http.begin(DATA_ENDPOINT);
+  http.begin(*client, DATA_ENDPOINT);
   http.addHeader("Content-Type", "application/json");
   http.addHeader("x-access-token", SERVER_TOKEN);
 
